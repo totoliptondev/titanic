@@ -1,5 +1,5 @@
 # Kaggle Titanic Machine Learning challenge.
-The python script provided here is for the machine learning challenge posted on https://www.kaggle.com/c/titanic. On April 15, 1912, during her maiden voyage, the Titanic sank after colliding with an iceberg, killing 1502 out of 2224 passengers and crew. The goal of this project is to predict the survivers using different features of the passengers on titanic. In the raw data, the features given are the following:
+The python script provided here is for the machine learning challenge posted on https://www.kaggle.com/c/titanic. On April 15, 1912, during her maiden voyage, the Titanic sank after colliding with an iceberg, killing 1502 out of 2224 passengers and crew. The goal of this project is to predict the survivors using different features of the passengers on titanic. In the raw data, the features given are the following:
 
 * <font color="red">PassengerId </font> -- A numerical id assigned to each passenger.
 * <font color="red">Survived </font> -- Whether the passenger survived (1), or didn't (0).
@@ -27,8 +27,8 @@ The python script provided here is for the machine learning challenge posted on 
 5. The result of linear regression is also used as a feature.
 
 ### algorithms
-Three algorithm are used: logistic regression, random forest, and gradient boosting. The result is determined by a majority vote. The three algorithm each makes a prediciton, and if any two algorithms predict 1, the result is 1; otherwise the result is 0.
+Three algorithm are used: logistic regression, random forest, and gradient boosting. The result is determined by a majority vote. The three algorithm each makes a prediction, and if any two algorithms predict 1, the result is 1; otherwise the result is 0.
 
 
-
-
+### Notes:
+this script is based on the guide on https://www.dataquest.io/section/kaggle-competitions
