@@ -60,6 +60,8 @@ for samples in (titanic, titanic_test):
     # convert sex into numeric id.
     samples.loc[samples["Sex"] == "male", "Sex"] = 0.0
     samples.loc[samples["Sex"] == "female", "Sex"] = 1.0
+    samples["Cabin"] = samples["Cabin"].fillna(0)
+    samples.loc[samples["Cabin"] != 0, "Cabin"] = 1
 
     # replace missing embarked location with the most frequent entry "S",
     # and then convert to a numeric id.
@@ -83,9 +85,10 @@ for samples in (titanic, titanic_test):
     family_ids[titanic["FamilySize"] < 3] = -1
     samples["FamilyId"] = family_ids
 
+
 ## ================ Feature Analysis ==============================
 #pick the predictors for analysis.
-predictors = ["Pclass", "Sex", "Age", "Fare", "Embarked", "FamilySize",  "Title"]
+predictors = ["Pclass", "Sex", "Age", "Fare", "Embarked", "FamilySize",  "Title", "Cabin"]
 
 # using selectKBest to examine the most important features and plot the result.
 selector = SelectKBest(f_classif, k = 5)
@@ -107,20 +110,20 @@ titanic_test["LinReg"] = alg1.predict(titanic_test[predictors])
 # initializing three algorithms.
 alg2 = LogisticRegression(random_state = 1)
 alg3 = RandomForestClassifier(random_state = 1, n_estimators = 100, min_samples_split = 4, min_samples_leaf =2)
-alg4 = GradientBoostingClassifier(random_state = 1, n_estimators = 20, max_depth = 3)
+alg4 = GradientBoostingClassifier(random_state = 1, n_estimators = 25, max_depth = 3)
 
 # Run all three predictor and place the result in the list: predictions
 predictions = []
 for alg, alg_name in [(alg2, "logistic regression"), (alg3, "random forest"), (alg4, "gradient boosting")]:
-    scores = CV.cross_val_score(alg, titanic[predictors + ["LinReg"] ], titanic["Survived"], cv = 4)
+    scores = CV.cross_val_score(alg, titanic[predictors  ], titanic["Survived"], cv = 4)
     print("The accuracy of %s model is: %1.4f" % (alg_name, scores.mean()))
-    alg.fit(titanic[predictors + ["LinReg"]], titanic["Survived"])
-    predictions.append(alg.predict(titanic_test[predictors + ["LinReg"]]))
+    alg.fit(titanic[predictors ], titanic["Survived"])
+    predictions.append(alg.predict_proba(titanic_test[predictors ]))
 
 # Use majority voting rule to determine the final result.
-final_predictions = (predictions[0] + predictions[1] + predictions[2])
-final_predictions[final_predictions <   2] = 0
-final_predictions[final_predictions >=  2] = 1
+final_predictions = (predictions[0][:,1] + predictions[1][:,1]*0 + predictions[2][:,1]*3) / 4.0
+final_predictions[final_predictions <=   0.5] = 0
+final_predictions[final_predictions >  0.5] = 1
 final_predictions = final_predictions.astype(int)
 
 # save the result for submission.
